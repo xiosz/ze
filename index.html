@@ -4,34 +4,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         :root {
-            --particle-color: rgba(255,255,255,0.8);
-            --line-color: rgba(255,255,255,0.2);
+            --bg: #000000;
+            --text: #FFFFFF;
+            --particle: rgba(255,255,255,0.8);
+            --line: rgba(255,255,255,0.1);
         }
 
         body {
             margin: 0;
             overflow: hidden;
-            background: #0a0e17;
-            touch-action: none;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Helvetica Neue', sans-serif;
         }
 
         #canvas {
             position: fixed;
             top: 0;
             left: 0;
+            z-index: 0;
         }
 
-        .content {
-            position: relative;
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             z-index: 2;
-            /* 保持原有内容样式 */
+        }
+
+        .link-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .link-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .link-item:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.1);
+        }
+
+        a {
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
-    <div class="content">
-        <!-- 保持原有链接内容 -->
+    
+    <div class="header">
+        <div class="link-box">
+            <h1>🔗 小泽资源导航</h1>
+            <div class="link-item">
+                <a href="https://xiosz.github.io/x/" target="_blank">🔧 自用越狱源</a>
+            </div>
+            <div class="link-item">
+                <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&amp;st=d1ojb69t&amp;dl=1" target="_blank">⬇️ 微信IPA下载</a>
+            </div>
+            <div class="link-item">
+                <a href="https://ic.c9dun.cn/links/032C4695" target="_blank">🎟️ 证书购买</a>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -40,8 +87,7 @@
                 this.canvas = document.getElementById('canvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.particles = [];
-                this.touchPoints = new Map();
-                this.noiseSeed = Math.random() * 1000;
+                this.touchPos = { x: null, y: null, radius: 100 };
 
                 this.init();
                 this.bindEvents();
@@ -61,18 +107,14 @@
             }
 
             createParticles() {
-                const density = window.innerWidth < 768 ? 120 : 80;
-                const count = Math.floor((this.width * this.height) / density ** 2);
-                
+                const count = Math.floor((this.width * this.height) / 15000);
                 for(let i = 0; i < count; i++) {
                     this.particles.push({
                         x: Math.random() * this.width,
                         y: Math.random() * this.height,
-                        vx: (Math.random() - 0.5) * 0.2,
-                        vy: (Math.random() - 0.5) * 0.2,
-                        radius: Math.random() * 1.5 + 0.5,
-                        baseRadius: 0,
-                        opacity: Math.random() * 0.5 + 0.3
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: (Math.random() - 0.5) * 0.4,
+                        size: Math.random() * 1.5 + 0.5
                     });
                 }
             }
@@ -80,113 +122,81 @@
             bindEvents() {
                 window.addEventListener('resize', () => this.resize());
                 
-                // 触屏事件
-                this.canvas.addEventListener('touchstart', e => this.handleTouch(e));
-                this.canvas.addEventListener('touchmove', e => this.handleTouch(e));
-                this.canvas.addEventListener('touchend', () => this.touchPoints.clear());
-            }
+                // 触屏交互
+                this.canvas.addEventListener('touchmove', (e) => {
+                    const touch = e.touches[0];
+                    this.touchPos.x = touch.clientX;
+                    this.touchPos.y = touch.clientY;
+                }, { passive: true });
 
-            handleTouch(e) {
-                e.preventDefault();
-                this.touchPoints.clear();
-                const touches = e.touches;
-                for(let i = 0; i < touches.length; i++) {
-                    this.touchPoints.set(i, {
-                        x: touches[i].clientX,
-                        y: touches[i].clientY,
-                        radius: 80
-                    });
-                }
-            }
-
-            applyNoise(p) {
-                // 柏林噪声生成自然运动
-                const scale = 0.005;
-                const speed = 0.8;
-                const noise = (x, y) => {
-                    return Math.perlin2(x + this.noiseSeed, y + this.noiseSeed) * speed;
-                };
-                
-                p.vx += noise(p.x * scale, p.y * scale) * 0.1;
-                p.vy += noise(p.y * scale, p.x * scale) * 0.1;
+                this.canvas.addEventListener('touchend', () => {
+                    this.touchPos.x = null;
+                    this.touchPos.y = null;
+                });
             }
 
             updateParticles() {
                 this.particles.forEach(p => {
                     // 自然运动
-                    this.applyNoise(p);
-                    
-                    // 边界反弹
-                    if(p.x < 0 || p.x > this.width) p.vx *= -0.8;
-                    if(p.y < 0 || p.y > this.height) p.vy *= -0.8;
-                    
-                    // 速度衰减
-                    p.vx *= 0.99;
-                    p.vy *= 0.99;
-                    
-                    // 更新位置
                     p.x += p.vx;
                     p.y += p.vy;
+                    
+                    // 边界反弹
+                    if(p.x < 0 || p.x > this.width) p.vx *= -1;
+                    if(p.y < 0 || p.y > this.height) p.vy *= -1;
 
-                    // 触屏避让
-                    this.touchPoints.forEach(tp => {
-                        const dx = p.x - tp.x;
-                        const dy = p.y - tp.y;
+                    // 触控避让
+                    if(this.touchPos.x && this.touchPos.y) {
+                        const dx = p.x - this.touchPos.x;
+                        const dy = p.y - this.touchPos.y;
                         const dist = Math.sqrt(dx*dx + dy*dy);
                         
-                        if(dist < tp.radius) {
-                            const force = (tp.radius - dist) / tp.radius;
-                            p.vx += (dx / dist) * force * 0.3;
-                            p.vy += (dy / dist) * force * 0.3;
+                        if(dist < this.touchPos.radius) {
+                            p.vx += (dx / dist) * 0.2;
+                            p.vy += (dy / dist) * 0.2;
                         }
-                    });
+                    }
                 });
             }
 
-            drawParticles() {
-                this.ctx.clearRect(0, 0, this.width, this.height);
-                
-                // 绘制连线
+            drawConnections() {
                 this.particles.forEach((p1, i) => {
-                    this.particles.slice(i + 1).forEach(p2 => {
+                    this.particles.slice(i+1).forEach(p2 => {
                         const dx = p1.x - p2.x;
                         const dy = p1.y - p2.y;
                         const dist = Math.sqrt(dx*dx + dy*dy);
                         
-                        if(dist < 100) {
+                        if(dist < 80) {
                             this.ctx.beginPath();
-                            this.ctx.strokeStyle = `rgba(255,255,255,${0.3 - dist/100})`;
-                            this.ctx.lineWidth = 0.3;
+                            this.ctx.strokeStyle = `rgba(255,255,255,${1 - dist/80})`;
+                            this.ctx.lineWidth = 0.5;
                             this.ctx.moveTo(p1.x, p1.y);
                             this.ctx.lineTo(p2.x, p2.y);
                             this.ctx.stroke();
                         }
                     });
                 });
+            }
 
-                // 绘制粒子
+            drawParticles() {
                 this.particles.forEach(p => {
                     this.ctx.beginPath();
-                    this.ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
-                    this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = var(--particle);
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                     this.ctx.fill();
                 });
             }
 
             animate() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
                 this.updateParticles();
+                this.drawConnections();
                 this.drawParticles();
-                this.noiseSeed += 0.005;
                 requestAnimationFrame(() => this.animate());
             }
         }
 
-        // 初始化网络
-        Math.seedrandom();
-        if(typeof Math.perlin2 === 'undefined') {
-            // 柏林噪声polyfill
-            // (此处需添加perlin噪声生成代码，因篇幅限制暂略)
-        }
+        // 初始化粒子系统
         new ParticleNetwork();
     </script>
 </body>
