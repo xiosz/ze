@@ -2,53 +2,196 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 强制HTTPS安全策略 -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <style>
+        :root {
+            --primary: #6C5CE7;
+            --secondary: #A8A4FF;
+            --particle: rgba(255,255,255,0.8);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 0 20px;
-            background: #f0f2f5;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui;
+            background: #0F172A;
+            cursor: none;
         }
-        h1 {
-            color: #24292e;
-            text-align: center;
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
         }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            /* 保留原有界面样式 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 原有.link-box等样式保留 */
         .link-box {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(108,92,231,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
         }
+
         .link-item {
-            margin: 15px 0;
-            padding: 12px;
-            border-left: 4px solid #2188ff;
-            background: #f6f8fa;
-            transition: transform 0.2s;
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            transition: transform 0.3s ease;
         }
+
         .link-item:hover {
-            transform: translateX(10px);
+            transform: translateX(15px);
+            background: rgba(108,92,231,0.15);
         }
+
         a {
+            color: white;
             text-decoration: none;
-            color: #0366d6;
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
     </style>
 </head>
 <body>
-    <h1>📚 资源导航</h1>
-    <div class="link-box">
-        <div class="link-item">
-            <a href="https://xiosz.github.io/x/" target="_blank">🔧 小泽自用越狱源</a>
-        </div>
-        <div class="link-item">
-            <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&st=d1ojb69t&dl=1" target="_blank">📱 微信IPA下载</a>
-        </div>
-        <div class="link-item">
-            <a href="https://ic.c9dun.cn/links/032C4695" target="_blank">🎫 证书购买地址</a>
+    <canvas id="particle-canvas"></canvas>
+    
+    <div class="content">
+        <div class="link-box">
+            <h1>✨ 小泽资源库</h1>
+            <div class="link-item">
+                <!-- 修复后的安全链接（转义特殊符号） -->
+                <a href="https://xiosz.github.io/x/" target="_blank">🔧 自用越狱源</a>
+            </div>
+            <div class="link-item">
+                <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&amp;st=d1ojb69t&amp;dl=1" target="_blank">⬇️ 微信IPA下载</a>
+            </div>
+            <div class="link-item">
+                <a href="https://ic.c9dun.cn/links/032C4695" target="_blank">🎟️ 证书购买</a>
+            </div>
         </div>
     </div>
+
+    <script>
+        // 动态粒子系统
+        class ParticleSystem {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.mouse = { x: null, y: null, radius: 100 };
+
+                this.init();
+                this.animate();
+                
+                // 交互事件监听
+                window.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                });
+
+                window.addEventListener('touchmove', (e) => {
+                    this.mouse.x = e.touches[0].clientX;
+                    this.mouse.y = e.touches[0].clientY;
+                }, { passive: true });
+
+                window.addEventListener('resize', () => this.init());
+            }
+
+            init() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                
+                // 初始化粒子
+                this.particles = [];
+                const particleCount = Math.floor(this.canvas.width * this.canvas.height / 15000);
+                
+                for(let i = 0; i < particleCount; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: Math.random() * 2 + 1,
+                        dx: (Math.random() - 0.5) * 0.5,
+                        dy: (Math.random() - 0.5) * 0.5,
+                        opacity: Math.random() * 0.5 + 0.2
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // 更新粒子位置
+                this.particles.forEach(particle => {
+                    // 鼠标交互
+                    const dx = this.mouse.x - particle.x;
+                    const dy = this.mouse.y - particle.y;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if(distance < this.mouse.radius) {
+                        const force = (this.mouse.radius - distance) / this.mouse.radius;
+                        particle.x -= dx * force * 0.1;
+                        particle.y -= dy * force * 0.1;
+                    }
+
+                    // 边界反弹
+                    if(particle.x <= 0 || particle.x >= this.canvas.width) particle.dx *= -1;
+                    if(particle.y <= 0 || particle.y >= this.canvas.height) particle.dy *= -1;
+
+                    particle.x += particle.dx;
+                    particle.y += particle.dy;
+                });
+
+                // 绘制粒子和连线
+                this.draw();
+                requestAnimationFrame(() => this.animate());
+            }
+
+            draw() {
+                this.particles.forEach(p1 => {
+                    // 绘制粒子
+                    this.ctx.beginPath();
+                    this.ctx.fillStyle = `rgba(255,255,255,${p1.opacity})`;
+                    this.ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    // 绘制连线
+                    this.particles.forEach(p2 => {
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distance = Math.sqrt(dx*dx + dy*dy);
+
+                        if(distance < 100) {
+                            this.ctx.beginPath();
+                            this.ctx.strokeStyle = `rgba(255,255,255,${0.3 - distance/100})`;
+                            this.ctx.lineWidth = 0.5;
+                            this.ctx.moveTo(p1.x, p1.y);
+                            this.ctx.lineTo(p2.x, p2.y);
+                            this.ctx.stroke();
+                        }
+                    });
+                });
+            }
+        }
+
+        // 初始化粒子系统
+        const canvas = document.getElementById('particle-canvas');
+        new ParticleSystem(canvas);
+    </script>
 </body>
 </html>
