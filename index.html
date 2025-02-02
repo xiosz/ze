@@ -9,6 +9,7 @@
             --bg: #0a0c17;
             --text: rgba(255,255,255,0.95);
             --accent: #6C5CE7;
+            --card-bg: rgba(17, 25, 40, 0.95);
         }
 
         body {
@@ -17,6 +18,7 @@
             background: var(--bg);
             color: var(--text);
             font-family: 'Inter', system-ui;
+            line-height: 1.6;
         }
 
         #particles-js {
@@ -28,114 +30,198 @@
             z-index: 0;
         }
 
+        /* 全新UI设计 */
         .ui-container {
             position: relative;
             z-index: 2;
-            padding: 20px;
-            background: rgba(10,12,23,0.85);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 3rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-wrapper {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(17, 25, 40, 0.8);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A8A4FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .link-grid {
-            max-width: 800px;
-            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
 
+        /* 高级卡片设计 */
         .link-card {
-            padding: 20px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 16px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 0%, 
+                rgba(108,92,231,0.1) 50%, 
+                transparent 100%);
+            animation: glow 8s linear infinite;
+        }
+
+        @keyframes glow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .link-card:hover {
-            transform: translateY(-3px);
-            background: rgba(108,92,231,0.15);
-            box-shadow: 0 8px 20px rgba(108,92,231,0.2);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(108,92,231,0.3);
         }
 
-        .link-card a {
-            color: var(--text);
-            text-decoration: none;
+        /* 链接内容排版 */
+        .link-content {
+            position: relative;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .link-icon {
+            font-size: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 12px;
+            background: rgba(108,92,231,0.15);
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: 1.1em;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .link-card:hover .link-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .link-text {
+            flex: 1;
+        }
+
+        .link-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .link-desc {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.8);
         }
     </style>
 </head>
 <body>
-    <!-- 替换为particles.js背景 -->
     <div id="particles-js"></div>
     
     <div class="ui-container">
-        <div class="link-grid">
-            <!-- 越狱源 -->
-            <div class="link-card">
-                <a href="https://xiosz.github.io/x/" target="_blank">
-                    <span style="font-size:1.4em">🔧</span>
-                    <div>
-                        <div style="font-weight:600">自用越狱源</div>
-                        <div style="opacity:0.8;font-size:0.9em">iOS系统工具集合</div>
-                    </div>
-                </a>
+        <div class="content-wrapper">
+            <div class="header">
+                <h1 class="title">资源导航中心</h1>
+                <p class="link-desc">精选优质资源 ｜ 持续更新维护</p>
             </div>
 
-            <!-- 微信IPA -->
-            <div class="link-card">
-                <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&amp;st=d1ojb69t&amp;dl=1" target="_blank">
-                    <span style="font-size:1.4em">📱</span>
-                    <div>
-                        <div style="font-weight:600">微信IPA下载</div>
-                        <div style="opacity:0.8;font-size:0.9em">版本8.0.56-1</div>
-                    </div>
-                </a>
-            </div>
+            <div class="link-grid">
+                <!-- 越狱源 -->
+                <div class="link-card">
+                    <a href="https://xiosz.github.io/x/" target="_blank" class="link-content">
+                        <div class="link-icon">🔧</div>
+                        <div class="link-text">
+                            <div class="link-title">自用越狱源</div>
+                            <div class="link-desc">精选iOS工具集合，持续更新插件资源</div>
+                        </div>
+                    </a>
+                </div>
 
-            <!-- 证书购买 -->
-            <div class="link-card">
-                <a href="https://ic.c9dun.cn/links/032C4695" target="_blank">
-                    <span style="font-size:1.4em">🎫</span>
-                    <div>
-                        <div style="font-weight:600">证书购买地址</div>
-                        <div style="opacity:0.8;font-size:0.9em">企业级签名服务</div>
-                    </div>
-                </a>
+                <!-- 微信IPA -->
+                <div class="link-card">
+                    <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&amp;st=d1ojb69t&amp;dl=1" 
+                       target="_blank" 
+                       class="link-content">
+                        <div class="link-icon">📱</div>
+                        <div class="link-text">
+                            <div class="link-title">微信IPA</div>
+                            <div class="link-desc">稳定版本 8.0.56-1，支持多设备安装</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 证书购买 -->
+                <div class="link-card">
+                    <a href="https://ic.c9dun.cn/links/032C4695" 
+                       target="_blank" 
+                       class="link-content">
+                        <div class="link-icon">🎫</div>
+                        <div class="link-text">
+                            <div class="link-title">企业证书</div>
+                            <div class="link-desc">专业签名服务，长期稳定有效</div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 替换为particles.js脚本 -->
+    <!-- 原始粒子参数 -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         particlesJS('particles-js', {
             "particles": {
-                "number": {
-                    "value": 120,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {"value": "#6C5CE7"},
+                "number": {"value": 80,"density": {"enable": true,"value_area": 800}},
+                "color": {"value": "#ffffff"},
                 "shape": {"type": "circle"},
-                "opacity": {"value": 0.7},
-                "size": {"value": 3,"random": true},
+                "opacity": {"value": 0.5},
+                "size": {"value": 5,"random": true},
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#6C5CE7",
+                    "color": "#ffffff",
                     "opacity": 0.4,
                     "width": 1
                 },
                 "move": {
                     "enable": true,
-                    "speed": 4,
+                    "speed": 6,
                     "direction": "none",
                     "out_mode": "out"
                 }
@@ -147,8 +233,8 @@
                     "onclick": {"enable": true,"mode": "push"}
                 },
                 "modes": {
-                    "repulse": {"distance": 100},
-                    "push": {"particles_nb": 3}
+                    "repulse": {"distance": 200},
+                    "push": {"particles_nb": 4}
                 }
             },
             "retina_detect": true
