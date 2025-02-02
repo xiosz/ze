@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>小泽资源导航</title>
     <style>
+    html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* 完全禁用滚动条 */
+}
         :root {
             --bg: #0a0c17;
             --text: rgba(255,255,255,0.95);
@@ -34,9 +39,9 @@
         .ui-container {
             position: relative;
             z-index: 2;
-            padding: 2rem;
+            padding: 20px 2rem 0;
             min-height: 100vh;
-            display: flex;
+            display: flex-start;
             align-items: center;
             justify-content: center;
         }
