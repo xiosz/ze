@@ -122,6 +122,7 @@
     </style>
 </head>
 <body>
+    <!-- 使用提取的粒子背景效果 -->
     <div id="particles-js"></div>
     
     <div class="ui-container">
@@ -172,7 +173,7 @@
         </div>
     </div>
 
-    <!-- 原始粒子参数 -->
+    <!-- 使用提取的粒子参数 -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         particlesJS('particles-js', {
@@ -192,30 +193,15 @@
                     "stroke": {
                         "width": 0,
                         "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
                     }
                 },
                 "opacity": {
                     "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
+                    "random": false
                 },
                 "size": {
                     "value": 5,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
+                    "random": true
                 },
                 "line_linked": {
                     "enable": true,
@@ -228,14 +214,7 @@
                     "enable": true,
                     "speed": 6,
                     "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
+                    "out_mode": "out"
                 }
             },
             "interactivity": {
@@ -248,31 +227,14 @@
                     "onclick": {
                         "enable": true,
                         "mode": "push"
-                    },
-                    "resize": true
+                    }
                 },
                 "modes": {
-                    "grab": {
-                        "distance": 400,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
                     "repulse": {
                         "distance": 200
                     },
                     "push": {
                         "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
                     }
                 }
             },
