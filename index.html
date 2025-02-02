@@ -5,30 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>小泽资源导航</title>
     <style>
-        /* 新增禁止滚动样式 */
-        html, body {
-            height: 100%;
-            width: 100%;
+        :root {
+            --bg: #0a0c17;
+            --text: rgba(255,255,255,0.95);
+            --accent: #6C5CE7;
+            --card-bg: rgba(17, 25, 40, 0.95);
+        }
+
+        body {
+            margin: 0;
             overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui;
+            line-height: 1.6;
         }
 
-        /* 顶部对齐修改 */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* 全新UI设计 */
         .ui-container {
-            padding: 1rem 2rem 0;
-            align-items: flex-start;
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* 点击效果 */
-        .link-card:active {
-            transform: scale(0.98);
-            filter: brightness(0.9);
+        .content-wrapper {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A8A4FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .link-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        /* 卡片设计 */
+        .link-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(108,92,231,0.3);
+        }
+
+        .link-content {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .link-icon {
+            font-size: 1.8rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 10px;
+            background: rgba(108,92,231,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .link-text {
+            flex: 1;
+        }
+
+        .link-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
+    <!-- 使用提取的粒子背景效果 -->
     <div id="particles-js"></div>
     
-    <!-- 保持原有body内容完全不变 -->
     <div class="ui-container">
         <div class="content-wrapper">
             <div class="header">
@@ -37,28 +133,31 @@
             </div>
 
             <div class="link-grid">
+                <!-- 越狱源 -->
                 <div class="link-card">
                     <a href="https://xiosz.github.io/x/" target="_blank" class="link-content">
                         <div class="link-icon">🔧</div>
                         <div class="link-text">
                             <div class="link-title">自用越狱源</div>
-                            <div class="link-desc">越狱自用源</div>
+                            <div class="link-desc">iOS越狱</div>
                         </div>
                     </a>
                 </div>
 
+                <!-- 微信IPA -->
                 <div class="link-card">
                     <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&amp;st=d1ojb69t&amp;dl=1" 
                        target="_blank" 
                        class="link-content">
                         <div class="link-icon">📱</div>
                         <div class="link-text">
-                            <div class="link-title">微信IPA</div>
+                            <div class="link-title">微信.IPA</div>
                             <div class="link-desc">版本8.0.56-1</div>
                         </div>
                     </a>
                 </div>
 
+                <!-- 证书购买 -->
                 <div class="link-card">
                     <a href="https://ic.c9dun.cn/links/032C4695" 
                        target="_blank" 
@@ -74,17 +173,36 @@
         </div>
     </div>
 
-    <!-- 保持原有粒子脚本完全不变 -->
+    <!-- 使用提取的粒子参数 -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 保持原有粒子配置完整不变
         particlesJS('particles-js', {
             "particles": {
-                "number": {"value": 80,"density": {"enable": true,"value_area": 800}},
-                "color": {"value": "#ffffff"},
-                "shape": {"type": "circle"},
-                "opacity": {"value": 0.5},
-                "size": {"value": 5,"random": true},
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false
+                },
+                "size": {
+                    "value": 5,
+                    "random": true
+                },
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
@@ -102,12 +220,22 @@
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
-                    "onhover": {"enable": true,"mode": "repulse"},
-                    "onclick": {"enable": true,"mode": "push"}
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    }
                 },
                 "modes": {
-                    "repulse": {"distance": 200},
-                    "push": {"particles_nb": 4}
+                    "repulse": {
+                        "distance": 200
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
                 }
             },
             "retina_detect": true
