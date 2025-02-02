@@ -249,7 +249,7 @@
     <!-- 在<body>结束前添加 -->
 <div class="music-player">
     <audio id="player">
-        <source src="music/background-music.mp3" type="audio/mpeg">
+        <source src="music/Xiaoze.mp3" type="audio/mpeg">
     </audio>
     <div class="controls">
         <button id="playBtn">▶</button>
@@ -308,7 +308,7 @@ const currentTime = document.getElementById('currentTime');
 // 播放/暂停控制
 playBtn.addEventListener('click', () => {
     player.paused ? player.play() : player.pause();
-    playBtn.textContent = player.paused ? '▶' : '⏸';
+    playBtn.textContent = player.paused ? '▶' : '⭕️';
 });
 
 // 进度条更新
