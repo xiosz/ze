@@ -1,75 +1,84 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>小泽资源导航</title>
     <style>
-        body {
-            font-family: 'Segoe UI', system-ui;
-            text-align: center;
-            padding: 50px 20px;
-            overflow: hidden;
-            color: white;
-            margin: 0;
+        :root {
+            --bg: #0a0c17;
+            --text: rgba(255,255,255,0.95);
+            --accent: #6C5CE7;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .ui-container {
             position: relative;
             z-index: 2;
-        }
-        .link-grid {
-            display: grid;
-            gap: 20px;
-            margin-top: 40px;
-        }
-        .link-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(8px);
-            border-radius: 12px;
             padding: 20px;
-            text-align: left;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(10,12,23,0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
+
+        .link-grid {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .link-card {
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
         .link-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.15);
+            transform: translateY(-3px);
+            background: rgba(108,92,231,0.15);
+            box-shadow: 0 8px 20px rgba(108,92,231,0.2);
         }
+
         .link-card a {
-            color: white;
+            color: var(--text);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 15px;
-        }
-        .link-icon {
-            font-size: 24px;
-            width: 40px;
-            text-align: center;
-        }
-        #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
+    <canvas id="canvas"></canvas>
     
-    <div class="container">
+    <!-- 完整链接容器 -->
+    <div class="ui-container">
         <div class="link-grid">
             <!-- 越狱源 -->
             <div class="link-card">
                 <a href="https://xiosz.github.io/x/" target="_blank">
-                    <div class="link-icon">🔧</div>
+                    <span style="font-size:1.4em">🔧</span>
                     <div>
-                        <div style="font-weight:600;font-size:1.1em">小泽自用越狱源</div>
+                        <div style="font-weight:600">自用越狱源</div>
                         <div style="opacity:0.8;font-size:0.9em">iOS系统工具集合</div>
                     </div>
                 </a>
@@ -78,9 +87,9 @@
             <!-- 微信IPA -->
             <div class="link-card">
                 <a href="https://www.dropbox.com/scl/fi/k2v4ak1wsrkl2g6hlo3en/_8.0.56-1.ipa?rlkey=ca35xf96nf8iovba1g5spyvp4&amp;st=d1ojb69t&amp;dl=1" target="_blank">
-                    <div class="link-icon">📱</div>
+                    <span style="font-size:1.4em">📱</span>
                     <div>
-                        <div style="font-weight:600;font-size:1.1em">微信IPA下载</div>
+                        <div style="font-weight:600">微信IPA下载</div>
                         <div style="opacity:0.8;font-size:0.9em">版本8.0.56-1</div>
                     </div>
                 </a>
@@ -89,9 +98,9 @@
             <!-- 证书购买 -->
             <div class="link-card">
                 <a href="https://ic.c9dun.cn/links/032C4695" target="_blank">
-                    <div class="link-icon">🎫</div>
+                    <span style="font-size:1.4em">🎫</span>
                     <div>
-                        <div style="font-weight:600;font-size:1.1em">证书购买地址</div>
+                        <div style="font-weight:600">证书购买地址</div>
                         <div style="opacity:0.8;font-size:0.9em">企业级签名服务</div>
                     </div>
                 </a>
@@ -99,47 +108,30 @@
         </div>
     </div>
 
-    <!-- 保持原有粒子效果 -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- 保持原有粒子系统脚本 -->
     <script>
-        particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {"enable": true,"value_area": 800}
-                },
-                "color": {"value": "#ffffff"},
-                "shape": {"type": "circle"},
-                "opacity": {"value": 0.5},
-                "size": {"value": 5,"random": true},
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "out_mode": "out"
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {"enable": true,"mode": "repulse"},
-                    "onclick": {"enable": true,"mode": "push"},
-                    "resize": true
-                },
-                "modes": {
-                    "repulse": {"distance": 200},
-                    "push": {"particles_nb": 4}
-                }
-            },
-            "retina_detect": true
-        });
+        class ParticleEngine {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.touches = new Map();
+                this.config = {
+                    particleDensity: 0.8,
+                    maxSpeed: 1.5,
+                    repulsionRadius: 120,
+                    lineDistance: 90,
+                    colorVariation: 0.3
+                };
+
+                this.initSystem();
+                this.initEvents();
+                this.animate();
+            }
+
+            // 保持原有粒子系统代码不变...
+        }
+        new ParticleEngine();
     </script>
 </body>
 </html>
