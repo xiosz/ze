@@ -34,7 +34,7 @@
         .ui-container {
             position: relative;
             z-index: 2;
-            padding: 3rem 1.5rem;
+            padding: 2rem;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -48,88 +48,60 @@
 
         .header {
             text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: rgba(17, 25, 40, 0.8);
-            border-radius: 16px;
-            backdrop-filter: blur(12px);
+            margin-bottom: 2rem;
         }
 
         .title {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             background: linear-gradient(135deg, #6C5CE7 0%, #A8A4FF 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
         .link-grid {
             display: grid;
-            gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         }
 
-        /* 高级卡片设计 */
+        /* 卡片设计 */
         .link-card {
-            padding: 2rem;
-            border-radius: 16px;
+            padding: 1.5rem;
+            border-radius: 12px;
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .link-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 0%, 
-                rgba(108,92,231,0.1) 50%, 
-                transparent 100%);
-            animation: glow 8s linear infinite;
-        }
-
-        @keyframes glow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         .link-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 16px 48px rgba(108,92,231,0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(108,92,231,0.3);
         }
 
-        /* 链接内容排版 */
         .link-content {
-            position: relative;
             display: flex;
-            gap: 1.5rem;
+            gap: 1.25rem;
             align-items: center;
-            z-index: 1;
         }
 
         .link-icon {
-            font-size: 2rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 12px;
+            font-size: 1.8rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 10px;
             background: rgba(108,92,231,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: transform 0.3s ease;
-        }
-
-        .link-card:hover .link-icon {
-            transform: rotate(15deg) scale(1.1);
         }
 
         .link-text {
@@ -137,17 +109,15 @@
         }
 
         .link-title {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
-            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
         }
 
         .link-desc {
-            font-size: 0.95rem;
-            opacity: 0.85;
-            line-height: 1.6;
-            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -157,8 +127,8 @@
     <div class="ui-container">
         <div class="content-wrapper">
             <div class="header">
-                <h1 class="title">资源导航中心</h1>
-                <p class="link-desc">精选优质资源 ｜ 持续更新维护</p>
+                <h1 class="title">资源导航</h1>
+                <p class="subtitle">精选资源 ｜ 持续更新</p>
             </div>
 
             <div class="link-grid">
@@ -168,7 +138,7 @@
                         <div class="link-icon">🔧</div>
                         <div class="link-text">
                             <div class="link-title">自用越狱源</div>
-                            <div class="link-desc">精选iOS工具集合，持续更新插件资源</div>
+                            <div class="link-desc">精选iOS工具集合</div>
                         </div>
                     </a>
                 </div>
@@ -181,7 +151,7 @@
                         <div class="link-icon">📱</div>
                         <div class="link-text">
                             <div class="link-title">微信IPA</div>
-                            <div class="link-desc">稳定版本 8.0.56-1，支持多设备安装</div>
+                            <div class="link-desc">版本8.0.56-1</div>
                         </div>
                     </a>
                 </div>
@@ -194,7 +164,7 @@
                         <div class="link-icon">🎫</div>
                         <div class="link-text">
                             <div class="link-title">企业证书</div>
-                            <div class="link-desc">专业签名服务，长期稳定有效</div>
+                            <div class="link-desc">专业签名服务</div>
                         </div>
                     </a>
                 </div>
@@ -207,11 +177,46 @@
     <script>
         particlesJS('particles-js', {
             "particles": {
-                "number": {"value": 80,"density": {"enable": true,"value_area": 800}},
-                "color": {"value": "#ffffff"},
-                "shape": {"type": "circle"},
-                "opacity": {"value": 0.5},
-                "size": {"value": 5,"random": true},
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 5,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
@@ -223,18 +228,52 @@
                     "enable": true,
                     "speed": 6,
                     "direction": "none",
-                    "out_mode": "out"
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
                 }
             },
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
-                    "onhover": {"enable": true,"mode": "repulse"},
-                    "onclick": {"enable": true,"mode": "push"}
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
                 },
                 "modes": {
-                    "repulse": {"distance": 200},
-                    "push": {"particles_nb": 4}
+                    "grab": {
+                        "distance": 400,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
                 }
             },
             "retina_detect": true
