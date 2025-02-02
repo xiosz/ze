@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小泽资源导航</title>
     <style>
         :root {
             --bg: #000000;
             --text: #FFFFFF;
-            --particle: rgba(255,255,255,0.8);
-            --line: rgba(255,255,255,0.1);
+            --particle: rgba(255,255,255,0.9);
+            --line: rgba(255,255,255,0.15);
         }
 
         body {
@@ -15,7 +17,7 @@
             overflow: hidden;
             background: var(--bg);
             color: var(--text);
-            font-family: 'Helvetica Neue', sans-serif;
+            font-family: system-ui, sans-serif;
         }
 
         #canvas {
@@ -26,14 +28,12 @@
         }
 
         .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
             z-index: 2;
+            padding: 20px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .link-box {
@@ -46,7 +46,7 @@
             margin: 10px 0;
             border-radius: 8px;
             background: rgba(255,255,255,0.05);
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .link-item:hover {
@@ -82,12 +82,58 @@
     </div>
 
     <script>
+        // 柏林噪声生成器
+        class Perlin {
+            constructor() {
+                this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+                            [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+                            [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+                this.p = new Uint8Array(256);
+                this.perm = new Uint8Array(512);
+                this.seed(Math.random());
+            }
+
+            seed(seed) {
+                let i, j, tmp;
+                for(i = 0; i < 256; i++) this.p[i] = i;
+                for(i = 0; i < 256; i++) {
+                    j = (seed = (seed * 9301 + 49297) % 233280) / 233280 * 256 | 0;
+                    tmp = this.p[i]; this.p[i] = this.p[j]; this.p[j] = tmp;
+                }
+                for(i = 0; i < 512; i++) this.perm[i] = this.p[i & 255];
+            }
+
+            noise(x, y) {
+                let X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+                x -= Math.floor(x); y -= Math.floor(y);
+                let u = fade(x), v = fade(y);
+                let a = this.perm[X]+Y, aa = this.perm[a], ab = this.perm[a+1],
+                    b = this.perm[X+1]+Y, ba = this.perm[b], bb = this.perm[b+1];
+                return lerp(v, lerp(u, grad(this.perm[aa], x, y, 0),
+                                       grad(this.perm[ba], x-1, y, 0)),
+                               lerp(u, grad(this.perm[ab], x, y-1, 0),
+                                       grad(this.perm[bb], x-1, y-1, 0)));
+            }
+        }
+
+        function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+        function lerp(t, a, b) { return a + t * (b - a); }
+        function grad(hash, x, y, z) {
+            let h = hash & 15;
+            let u = h < 8 ? x : y,
+                v = h < 4 ? y : h === 12 || h === 14 ? x : z;
+            return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+        }
+
+        // 粒子系统核心
         class ParticleNetwork {
             constructor() {
                 this.canvas = document.getElementById('canvas');
                 this.ctx = this.canvas.getContext('2d');
+                this.perlin = new Perlin();
                 this.particles = [];
-                this.touchPos = { x: null, y: null, radius: 100 };
+                this.touchPos = { x: null, y: null, radius: 120 };
+                this.noiseZ = 0;
 
                 this.init();
                 this.bindEvents();
@@ -107,13 +153,13 @@
             }
 
             createParticles() {
-                const count = Math.floor((this.width * this.height) / 15000);
-                for(let i = 0; i < count; i++) {
+                const density = Math.floor((this.width * this.height) / 15000);
+                for(let i = 0; i < density; i++) {
                     this.particles.push({
                         x: Math.random() * this.width,
                         y: Math.random() * this.height,
-                        vx: (Math.random() - 0.5) * 0.4,
-                        vy: (Math.random() - 0.5) * 0.4,
+                        vx: 0,
+                        vy: 0,
                         size: Math.random() * 1.5 + 0.5
                     });
                 }
@@ -122,12 +168,13 @@
             bindEvents() {
                 window.addEventListener('resize', () => this.resize());
                 
-                // 触屏交互
-                this.canvas.addEventListener('touchmove', (e) => {
+                // 触控事件
+                this.canvas.addEventListener('touchmove', e => {
+                    e.preventDefault();
                     const touch = e.touches[0];
                     this.touchPos.x = touch.clientX;
                     this.touchPos.y = touch.clientY;
-                }, { passive: true });
+                }, { passive: false });
 
                 this.canvas.addEventListener('touchend', () => {
                     this.touchPos.x = null;
@@ -136,26 +183,50 @@
             }
 
             updateParticles() {
+                const noiseScale = 0.005;
+                this.noiseZ += 0.01;
+
                 this.particles.forEach(p => {
-                    // 自然运动
+                    // 柏林噪声驱动运动
+                    const angle = this.perlin.noise(
+                        p.x * noiseScale,
+                        p.y * noiseScale,
+                        this.noiseZ
+                    ) * Math.PI * 2;
+
+                    p.vx += Math.cos(angle) * 0.1;
+                    p.vy += Math.sin(angle) * 0.1;
+
+                    // 速度限制
+                    p.vx = Math.max(-2, Math.min(2, p.vx));
+                    p.vy = Math.max(-2, Math.min(2, p.vy));
+
+                    // 位置更新
                     p.x += p.vx;
                     p.y += p.vy;
-                    
-                    // 边界反弹
-                    if(p.x < 0 || p.x > this.width) p.vx *= -1;
-                    if(p.y < 0 || p.y > this.height) p.vy *= -1;
+
+                    // 边界处理
+                    if(p.x < 0) p.x += this.width;
+                    if(p.x > this.width) p.x -= this.width;
+                    if(p.y < 0) p.y += this.height;
+                    if(p.y > this.height) p.y -= this.height;
 
                     // 触控避让
                     if(this.touchPos.x && this.touchPos.y) {
                         const dx = p.x - this.touchPos.x;
                         const dy = p.y - this.touchPos.y;
                         const dist = Math.sqrt(dx*dx + dy*dy);
-                        
+
                         if(dist < this.touchPos.radius) {
-                            p.vx += (dx / dist) * 0.2;
-                            p.vy += (dy / dist) * 0.2;
+                            const force = (this.touchPos.radius - dist) / this.touchPos.radius;
+                            p.vx += (dx / dist) * force * 0.5;
+                            p.vy += (dy / dist) * force * 0.5;
                         }
                     }
+
+                    // 速度衰减
+                    p.vx *= 0.98;
+                    p.vy *= 0.98;
                 });
             }
 
@@ -165,11 +236,11 @@
                         const dx = p1.x - p2.x;
                         const dy = p1.y - p2.y;
                         const dist = Math.sqrt(dx*dx + dy*dy);
-                        
-                        if(dist < 80) {
+
+                        if(dist < 100) {
                             this.ctx.beginPath();
-                            this.ctx.strokeStyle = `rgba(255,255,255,${1 - dist/80})`;
-                            this.ctx.lineWidth = 0.5;
+                            this.ctx.strokeStyle = `rgba(255,255,255,${1 - dist/100})`;
+                            this.ctx.lineWidth = 0.8;
                             this.ctx.moveTo(p1.x, p1.y);
                             this.ctx.lineTo(p2.x, p2.y);
                             this.ctx.stroke();
@@ -181,7 +252,7 @@
             drawParticles() {
                 this.particles.forEach(p => {
                     this.ctx.beginPath();
-                    this.ctx.fillStyle = var(--particle);
+                    this.ctx.fillStyle = 'rgba(255,255,255,0.9)';
                     this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                     this.ctx.fill();
                 });
@@ -196,7 +267,7 @@
             }
         }
 
-        // 初始化粒子系统
+        // 初始化系统
         new ParticleNetwork();
     </script>
 </body>
