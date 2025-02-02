@@ -246,89 +246,167 @@
             "retina_detect": true
         });
     </script>
-    <!-- 在<body>结束前添加 -->
+    <!-- 添加在<body>标签内适当位置 -->
 <div class="music-player">
-    <audio id="player">
-        <source src="music/Xiaoze.mp3" type="audio/mpeg">
-    </audio>
-    <div class="controls">
-        <button id="playBtn">▶</button>
-        <input type="range" id="progress" value="0">
-        <span id="currentTime">0:00</span>
+    <div class="player-container">
+        <audio id="player">
+            <source src="music/background-music.mp3" type="audio/mpeg">
+        </audio>
+        <div class="controls">
+            <button class="play-btn" id="playBtn">
+                <svg class="icon play-icon" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg class="icon pause-icon" viewBox="0 0 24 24" style="display:none;">
+                    <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+                </svg>
+            </button>
+            <div class="track-info">
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                    <input type="range" id="progress" class="progress-input">
+                </div>
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-/* 播放器样式 */
+/* 播放器主容器 */
 .music-player {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0,0,0,0.8);
-    padding: 10px;
-    border-radius: 8px;
-    backdrop-filter: blur(5px);
-    width: 200px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
+    padding: 12px 20px;
+    background: rgba(17, 25, 40, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+}
+
+/* 响应式布局 */
+@media (min-width: 768px) {
+    .music-player {
+        width: 400px;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+}
+
+.player-container {
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .controls {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
-button {
-    background: none;
+/* 播放按钮 */
+.play-btn {
+    background: rgba(108,92,231,0.15);
     border: none;
-    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-size: 1.2rem;
+    transition: 0.3s ease;
 }
 
-#progress {
+.play-btn:hover {
+    background: rgba(108,92,231,0.3);
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    fill: #6C5CE7;
+}
+
+/* 进度条样式 */
+.track-info {
     flex: 1;
-    height: 4px;
-    background: #555;
-    border-radius: 2px;
 }
 
-#currentTime {
+.progress-container {
+    position: relative;
+    height: 4px;
+    margin: 8px 0;
+}
+
+.progress-input {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+.progress-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #6C5CE7;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.progress-input::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.time-display {
+    display: flex;
+    justify-content: space-between;
     font-size: 0.8rem;
-    color: #fff;
+    color: rgba(255,255,255,0.8);
+    margin-top: 4px;
 }
 </style>
 
 <script>
-const player = document.getElementById('player');
+// 在原有脚本基础上增加以下功能
 const playBtn = document.getElementById('playBtn');
-const progress = document.getElementById('progress');
-const currentTime = document.getElementById('currentTime');
+const playIcon = document.querySelector('.play-icon');
+const pauseIcon = document.querySelector('.pause-icon');
 
-// 播放/暂停控制
-playBtn.addEventListener('click', () => {
-    player.paused ? player.play() : player.pause();
-    playBtn.textContent = player.paused ? '▶' : '⭕️';
-});
+function updateButton() {
+    if (player.paused) {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+    } else {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+    }
+}
 
-// 进度条更新
-player.addEventListener('timeupdate', () => {
-    const progressValue = (player.currentTime / player.duration) * 100;
-    progress.value = progressValue;
-    currentTime.textContent = formatTime(player.currentTime);
-});
+// 初始化音量
+player.volume = 0.8;
 
-// 拖拽进度条
-progress.addEventListener('input', (e) => {
-    const seekTime = (e.target.value / 100) * player.duration;
-    player.currentTime = seekTime;
-});
+// 添加触摸事件支持
+progress.addEventListener('touchstart', handleProgress);
+progress.addEventListener('touchmove', handleProgress);
 
-// 时间格式化
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    seconds = Math.floor(seconds % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+function handleProgress(e) {
+    const rect = this.getBoundingClientRect();
+    const pos = (e.touches[0].clientX - rect.left) / rect.width;
+    player.currentTime = pos * player.duration;
 }
 </script>
 </body>
