@@ -246,5 +246,90 @@
             "retina_detect": true
         });
     </script>
+    <!-- 在<body>结束前添加 -->
+<div class="music-player">
+    <audio id="player">
+        <source src="music/background-music.mp3" type="audio/mpeg">
+    </audio>
+    <div class="controls">
+        <button id="playBtn">▶</button>
+        <input type="range" id="progress" value="0">
+        <span id="currentTime">0:00</span>
+    </div>
+</div>
+
+<style>
+/* 播放器样式 */
+.music-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    width: 200px;
+    z-index: 1000;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+#progress {
+    flex: 1;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+}
+
+#currentTime {
+    font-size: 0.8rem;
+    color: #fff;
+}
+</style>
+
+<script>
+const player = document.getElementById('player');
+const playBtn = document.getElementById('playBtn');
+const progress = document.getElementById('progress');
+const currentTime = document.getElementById('currentTime');
+
+// 播放/暂停控制
+playBtn.addEventListener('click', () => {
+    player.paused ? player.play() : player.pause();
+    playBtn.textContent = player.paused ? '▶' : '⏸';
+});
+
+// 进度条更新
+player.addEventListener('timeupdate', () => {
+    const progressValue = (player.currentTime / player.duration) * 100;
+    progress.value = progressValue;
+    currentTime.textContent = formatTime(player.currentTime);
+});
+
+// 拖拽进度条
+progress.addEventListener('input', (e) => {
+    const seekTime = (e.target.value / 100) * player.duration;
+    player.currentTime = seekTime;
+});
+
+// 时间格式化
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+</script>
 </body>
 </html>
