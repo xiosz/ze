@@ -270,7 +270,7 @@
     padding: 10px;
     border-radius: 8px;
     backdrop-filter: blur(5px);
-    width: 95%;
+    width: 80%;
     z-index: 1000;
 }
 
@@ -310,7 +310,7 @@ const currentTime = document.getElementById('currentTime');
 // 播放/暂停控制
 playBtn.addEventListener('click', () => {
     player.paused ? player.play() : player.pause();
-    playBtn.textContent = player.paused ? '▶' : '🔘';
+    playBtn.textContent = player.paused ? '🎶' : '▶';
 });
 
 // 进度条更新
