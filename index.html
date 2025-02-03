@@ -277,110 +277,220 @@
         </div>
     </div>
 </div>
+<!-- 在</body>前添加 -->
+<div class="music-player">
+    <audio id="audioPlayer">
+        <source src="music/Xiaoze.mp3" type="audio/mpeg">
+    </audio>
+    <div class="player-container">
+        <!-- 专辑封面 -->
+        <div class="album-art">
+            <img src="cover.jpg" alt="Cover" class="artwork">
+            <div class="vinyl"></div>
+        </div>
+        
+        <!-- 播放控制 -->
+        <div class="player-controls">
+            <button class="play-btn" id="playBtn">
+                <div class="icon-wrapper">
+                    <svg class="icon play" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg class="icon pause" viewBox="0 0 24 24">
+                        <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+                    </svg>
+                </div>
+            </button>
+            
+            <div class="progress-container">
+                <div class="waveform"></div>
+                <input type="range" id="progress" class="progress-bar">
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
 /* 音乐播放器美化 */
 .music-player {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 320px;
-    background: rgba(17, 25, 40, 0.96);
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(17, 25, 40, 0.97);
     backdrop-filter: blur(20px);
     border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    padding: 20px;
     z-index: 1000;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .music-player:hover {
-    transform: translateY(-3px) scale(1.02);
+    transform: translateX(-50%) translateY(-5px);
 }
 
+/* 专辑封面 */
+.album-art {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: -40px auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.artwork {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vinyl {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle, 
+            transparent 65%, 
+            rgba(255,255,255,0.1) 75%,
+            transparent 80%);
+    animation: rotate 20s linear infinite;
+    animation-play-state: paused;
+}
+
+/* 播放控制 */
 .player-controls {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 15px;
 }
 
 .play-btn {
-    width: 46px;
-    height: 46px;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
     border-radius: 50%;
     background: rgba(108,92,231,0.15);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    border: 2px solid rgba(108,92,231,0.3);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .play-btn:hover {
     background: rgba(108,92,231,0.25);
-    transform: rotate(360deg);
+    transform: scale(1.1) rotate(180deg);
 }
 
 .icon {
-    width: 24px;
-    height: 24px;
-    color: #6C5CE7;
-    transition: transform 0.3s ease;
+    width: 28px;
+    height: 28px;
+    fill: #6C5CE7;
+    position: absolute;
+    left: 54%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.track-progress {
-    flex: 1;
+.icon.pause {
+    display: none;
+}
+
+/* 进度条 */
+.progress-container {
+    position: relative;
+}
+
+.waveform {
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(108,92,231,0.15) 50%, 
+        transparent 100%);
+    mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M2 20 Q 10 5 20 20 T 40 20 T 60 30 T 80 10 T 100 20" stroke="white" fill="none"/></svg>');
+    opacity: 0.3;
 }
 
 .progress-bar {
-    position: relative;
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px;
-    margin: 10px 0;
-}
-
-.progress-input {
     -webkit-appearance: none;
     width: 100%;
     height: 4px;
-    background: transparent;
-    position: absolute;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin: 12px 0;
+    position: relative;
     z-index: 2;
 }
 
-.progress-input::-webkit-slider-thumb {
+.progress-bar::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     background: #6C5CE7;
-    border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: 0.2s;
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(108,92,231,0.4);
+    transition: 0.3s ease;
 }
 
-.progress-input::-webkit-slider-thumb:hover {
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(108,92,231,0.5);
+.progress-bar::-webkit-slider-thumb:hover {
+    transform: scale(1.4);
 }
 
 .time-display {
     display: flex;
     justify-content: space-between;
-    font-size: 0.85rem;
     color: rgba(255,255,255,0.8);
-    margin-top: 6px;
+    font-size: 0.9rem;
+    margin-top: 8px;
 }
 
-/* 响应式优化 */
-@media (max-width: 768px) {
+/* 动画 */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.playing .vinyl {
+    animation-play-state: running;
+}
+
+.playing .icon.play {
+    display: none;
+}
+
+.playing .icon.pause {
+    display: block;
+}
+
+/* 移动端优化 */
+@media (max-width: 480px) {
     .music-player {
-        width: 90%;
-        right: 5%;
-        bottom: 15px;
+        width: 85%;
+        bottom: 20px;
+        padding: 16px;
+    }
+    
+    .album-art {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .play-btn {
+        width: 48px;
+        height: 48px;
     }
 }
 </style>
@@ -392,18 +502,22 @@ const playBtn = document.getElementById('playBtn');
 const progress = document.getElementById('progress');
 const currentTime = document.getElementById('currentTime');
 const duration = document.getElementById('duration');
+const vinyl = document.querySelector('.vinyl');
 
 // 播放控制
 playBtn.addEventListener('click', () => {
-    audio.paused ? audio.play() : audio.pause();
-    playBtn.classList.toggle('playing');
-    document.querySelector('.play').style.display = 
-        audio.paused ? 'block' : 'none';
-    document.querySelector('.pause').style.display = 
-        audio.paused ? 'none' : 'block';
+    if(audio.paused) {
+        audio.play();
+        playBtn.classList.add('playing');
+        vinyl.style.animationPlayState = 'running';
+    } else {
+        audio.pause();
+        playBtn.classList.remove('playing');
+        vinyl.style.animationPlayState = 'paused';
+    }
 });
 
-// 进度更新
+// 更新进度
 audio.addEventListener('timeupdate', () => {
     const percent = (audio.currentTime / audio.duration) * 100;
     progress.value = percent;
@@ -415,7 +529,7 @@ audio.addEventListener('loadedmetadata', () => {
     duration.textContent = formatTime(audio.duration);
 });
 
-// 进度拖拽
+// 进度控制
 progress.addEventListener('input', (e) => {
     audio.currentTime = (e.target.value / 100) * audio.duration;
 });
@@ -424,6 +538,16 @@ progress.addEventListener('input', (e) => {
 function formatTime(seconds) {
     const date = new Date(seconds * 1000);
     return date.toISOString().substr(14, 5).replace(/^0/, '');
+}
+
+// 触摸优化
+progress.addEventListener('touchstart', handleProgress);
+progress.addEventListener('touchmove', handleProgress);
+
+function handleProgress(e) {
+    const rect = progress.getBoundingClientRect();
+    const pos = (e.touches[0].clientX - rect.left) / rect.width;
+    audio.currentTime = pos * audio.duration;
 }
 </script>
 </body>
