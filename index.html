@@ -246,37 +246,7 @@
             "retina_detect": true
         });
     </script>
-    <!-- 在</body>前添加以下代码 -->
-<div class="music-player">
-    <audio id="audioPlayer">
-        <source src="music/Xiaoze.mp3" type="audio/mpeg">
-    </audio>
-    <div class="player-container">
-        <div class="player-controls">
-            <button class="play-btn" id="playBtn">
-                <div class="icon-container">
-                    <svg class="icon play" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M8 5v14l11-7z"/>
-                    </svg>
-                    <svg class="icon pause" viewBox="0 0 24 24" style="display:none;">
-                        <path fill="currentColor" d="M6 4h4v16H6zm8 0h4v16h-4z"/>
-                    </svg>
-                </div>
-            </button>
-            
-            <div class="track-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                    <input type="range" id="progress" class="progress-input">
-                </div>
-                <div class="time-display">
-                    <span id="currentTime">0:00</span>
-                    <span id="duration">0:00</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+   
 <!-- 在<body>结束前添加 -->
 <div class="music-player">
     <audio id="player">
