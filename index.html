@@ -277,184 +277,89 @@
         </div>
     </div>
 </div>
-<!-- 在</body>前添加以下代码 -->
+<!-- 在<body>结束前添加 -->
 <div class="music-player">
-    <audio id="audioPlayer">
+    <audio id="player">
         <source src="music/Xiaoze.mp3" type="audio/mpeg">
     </audio>
-    <div class="player-container">
-        <div class="player-controls">
-            <button class="play-btn" id="playBtn">
-                <div class="icon-container">
-                    <svg class="icon play" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M8 5v14l11-7z"/>
-                    </svg>
-                    <svg class="icon pause" viewBox="0 0 24 24" style="display:none;">
-                        <path fill="currentColor" d="M6 4h4v16H6zm8 0h4v16h-4z"/>
-                    </svg>
-                </div>
-            </button>
-            
-            <div class="track-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                    <input type="range" id="progress" class="progress-input">
-                </div>
-                <div class="time-display">
-                    <span id="currentTime">0:00</span>
-                    <span id="duration">0:00</span>
-                </div>
-            </div>
-        </div>
+    <div class="controls">
+        <button id="playBtn">▶</button>
+        <input type="range" id="progress" value="0">
+        <span id="currentTime">0:00</span>
     </div>
 </div>
 
 <style>
-/* 音乐播放器美化 */
+/* 播放器样式 */
 .music-player {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 320px;
-    background: rgba(17, 25, 40, 0.96);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-    padding: 16px;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    width: 200px;
     z-index: 1000;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.music-player:hover {
-    transform: translateY(-3px) scale(1.02);
-}
-
-.player-controls {
+.controls {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 
-.play-btn {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background: rgba(108,92,231,0.15);
+button {
+    background: none;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 1.2rem;
 }
 
-.play-btn:hover {
-    background: rgba(108,92,231,0.25);
-    transform: rotate(360deg);
-}
-
-.icon {
-    width: 24px;
-    height: 24px;
-    color: #6C5CE7;
-    transition: transform 0.3s ease;
-}
-
-.track-progress {
+#progress {
     flex: 1;
-}
-
-.progress-bar {
-    position: relative;
     height: 4px;
-    background: rgba(255,255,255,0.1);
+    background: #555;
     border-radius: 2px;
-    margin: 10px 0;
 }
 
-.progress-input {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    background: transparent;
-    position: absolute;
-    z-index: 2;
-}
-
-.progress-input::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    background: #6C5CE7;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.progress-input::-webkit-slider-thumb:hover {
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(108,92,231,0.5);
-}
-
-.time-display {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.8);
-    margin-top: 6px;
-}
-
-/* 响应式优化 */
-@media (max-width: 768px) {
-    .music-player {
-        width: 90%;
-        right: 5%;
-        bottom: 15px;
-    }
+#currentTime {
+    font-size: 0.8rem;
+    color: #fff;
 }
 </style>
 
 <script>
-// 音乐播放器功能
-const audio = document.getElementById('audioPlayer');
+const player = document.getElementById('player');
 const playBtn = document.getElementById('playBtn');
 const progress = document.getElementById('progress');
 const currentTime = document.getElementById('currentTime');
-const duration = document.getElementById('duration');
 
-// 播放控制
+// 播放/暂停控制
 playBtn.addEventListener('click', () => {
-    audio.paused ? audio.play() : audio.pause();
-    playBtn.classList.toggle('playing');
-    document.querySelector('.play').style.display = 
-        audio.paused ? 'block' : 'none';
-    document.querySelector('.pause').style.display = 
-        audio.paused ? 'none' : 'block';
+    player.paused ? player.play() : player.pause();
+    playBtn.textContent = player.paused ? '▶' : '🔘';
 });
 
-// 进度更新
-audio.addEventListener('timeupdate', () => {
-    const percent = (audio.currentTime / audio.duration) * 100;
-    progress.value = percent;
-    currentTime.textContent = formatTime(audio.currentTime);
+// 进度条更新
+player.addEventListener('timeupdate', () => {
+    const progressValue = (player.currentTime / player.duration) * 100;
+    progress.value = progressValue;
+    currentTime.textContent = formatTime(player.currentTime);
 });
 
-// 加载元数据
-audio.addEventListener('loadedmetadata', () => {
-    duration.textContent = formatTime(audio.duration);
-});
-
-// 进度拖拽
+// 拖拽进度条
 progress.addEventListener('input', (e) => {
-    audio.currentTime = (e.target.value / 100) * audio.duration;
+    const seekTime = (e.target.value / 100) * player.duration;
+    player.currentTime = seekTime;
 });
 
-// 专业时间格式化
+// 时间格式化
 function formatTime(seconds) {
-    const date = new Date(seconds * 1000);
-    return date.toISOString().substr(14, 5).replace(/^0/, '');
+    const minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 </script>
 </body>
