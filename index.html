@@ -260,54 +260,21 @@
 </div>
 
 <style>
-/* 播放器样式 */
+/* 音乐播放器容器样式 */
 .music-player {
-    position: fixed;
-    bottom: 20px;
-    left: 50%
-    transfore:translateX(-50%)
-    right: 20px;
-    background: rgba(0,0,0,0.8);
-    padding: 10px;
-    border-radius: 8px;
-    backdrop-filter: blur(5px);
-    width: 80%;
-    z-index: 1000;
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-#progress {
-    flex: 1;
-    height: 4px;
-    background: #555;
-    border-radius: 2px;
-}
-
-#currentTime {
-    font-size: 0.8rem;
-    color: #fff;
-}
-</style>
-
-<script>
-const player = document.getElementById('player');
-const playBtn = document.getElementById('playBtn');
-const progress = document.getElementById('progress');
-const currentTime = document.getElementById('currentTime');
-
+    position: fixed;  /* 固定定位 */
+    bottom: 30px;  /* 距离底部30px */
+    left: 50%;  /* 水平居中定位 */
+    transform: translateX(-50%);  /* 水平偏移修正 */
+    width: 90%;  /* 响应式宽度 */
+    max-width: 400px;  /* 最大宽度限制 */
+    background: rgba(17, 25, 40, 0.97);  /* 半透明背景 */
+    backdrop-filter: blur(20px);  /* 毛玻璃效果 */
+    border-radius: 16px;  /* 圆角半径 */
+    border: 1px solid rgba(255,255,255,0.15);  /* 边框样式 */
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);  /* 立体阴影 */
+    padding: 20px;  /* 内边距 */
+    z-index: 1000;  /* 层级设置 */
 // 播放/暂停控制
 playBtn.addEventListener('click', () => {
     player.paused ? player.play() : player.pause();
