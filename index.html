@@ -3,138 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>订单管理系统</title>
+    <title>云端订单管理系统</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase客户端库 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-tasks"></i> 订单管理系统</h1>
-            <p class="subtitle">简单高效的订单派发与处理工具</p>
-        </header>
+        <div class="glass-card">
+            <header>
+                <h1><i class="fas fa-cloud"></i> 云端订单管理系统</h1>
+                <p class="subtitle">基于Supabase云存储 · 实时同步 · 多设备访问</p>
+            </header>
 
-        <div class="button-container">
-            <button id="assignBtn" class="btn btn-primary">
-                <i class="fas fa-plus-circle"></i> 派单
-            </button>
-            <button id="processBtn" class="btn btn-secondary">
-                <i class="fas fa-list-check"></i> 打单
-            </button>
-            <button id="clearBtn" class="btn btn-danger">
-                <i class="fas fa-trash"></i> 清空订单
-            </button>
-        </div>
-
-        <!-- 派单弹窗 -->
-        <div id="assignModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2><i class="fas fa-file-circle-plus"></i> 创建新订单</h2>
-                    <span class="close">&times;</span>
+            <div class="dashboard">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalOrders">0</span>
+                            <span class="stat-label">总订单数</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="pendingOrders">0</span>
+                            <span class="stat-label">待处理</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon completed">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="completedOrders">0</span>
+                            <span class="stat-label">已完成</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-yen-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalRevenue">¥0</span>
+                            <span class="stat-label">总金额</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="orderForm">
-                        <div class="form-group">
-                            <label for="orderName"><i class="fas fa-heading"></i> 单名：</label>
-                            <input type="text" id="orderName" required placeholder="请输入订单名称">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="assigner"><i class="fas fa-user"></i> 派单人：</label>
-                            <input type="text" id="assigner" required placeholder="请输入派单人姓名">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="price"><i class="fas fa-tag"></i> 价格：</label>
-                            <input type="number" id="price" required placeholder="0.00" min="0" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="remarks"><i class="fas fa-comment"></i> 备注：</label>
-                            <textarea id="remarks" rows="3" placeholder="请输入订单备注信息"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="priority"><i class="fas fa-flag"></i> 优先级：</label>
-                            <select id="priority">
-                                <option value="low">低优先级</option>
-                                <option value="medium" selected>中优先级</option>
-                                <option value="high">高优先级</option>
-                                <option value="urgent">紧急</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="status"><i class="fas fa-spinner"></i> 状态：</label>
-                            <select id="status">
-                                <option value="pending" selected>待处理</option>
-                                <option value="processing">处理中</option>
-                                <option value="completed">已完成</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-check"></i> 提交订单
-                            </button>
-                            <button type="button" id="cancelBtn" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> 取消
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
-        <!-- 打单显示区域 -->
-        <div id="processSection" class="hidden">
-            <div class="section-header">
-                <h2><i class="fas fa-clipboard-list"></i> 订单列表</h2>
-                <div class="stats">
-                    <span id="totalOrders">总计: 0</span>
-                    <span id="pendingOrders">待处理: 0</span>
-                    <span id="completedOrders">已完成: 0</span>
+                <div class="action-buttons">
+                    <button id="assignBtn" class="btn btn-gradient-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>派单</span>
+                    </button>
+                    
+                    <button id="processBtn" class="btn btn-gradient-secondary">
+                        <i class="fas fa-tasks"></i>
+                        <span>打单</span>
+                    </button>
+                    
+                    <button id="syncBtn" class="btn btn-gradient-info">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>同步云端</span>
+                    </button>
+                    
+                    <button id="exportBtn" class="btn btn-gradient-success">
+                        <i class="fas fa-download"></i>
+                        <span>导出数据</span>
+                    </button>
+                    
+                    <button id="clearBtn" class="btn btn-gradient-danger">
+                        <i class="fas fa-trash"></i>
+                        <span>清空数据</span>
+                    </button>
                 </div>
             </div>
-            
-            <div class="filters">
-                <input type="text" id="searchInput" placeholder="搜索订单..." class="search-input">
-                <select id="statusFilter" class="filter-select">
-                    <option value="all">所有状态</option>
-                    <option value="pending">待处理</option>
-                    <option value="processing">处理中</option>
-                    <option value="completed">已完成</option>
-                </select>
-                <button id="sortBtn" class="btn btn-small">
-                    <i class="fas fa-sort-amount-down"></i> 按时间排序
-                </button>
-            </div>
-            
-            <div id="ordersList" class="orders-list">
-                <!-- 订单列表将在这里动态生成 -->
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <h3>暂无订单</h3>
-                    <p>点击"派单"按钮创建您的第一个订单</p>
+
+            <!-- 派单弹窗 -->
+            <div id="assignModal" class="modal">
+                <div class="modal-content slide-down">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-plus-circle"></i> 创建新订单</h2>
+                        <span class="close">&times;</span>
+                    </div>
+                    <div class="modal-body compact">
+                        <form id="orderForm">
+                            <div class="form-grid">
+                                <div class="form-group compact">
+                                    <label for="orderName"><i class="fas fa-heading"></i> 单名</label>
+                                    <input type="text" id="orderName" required placeholder="请输入订单名称">
+                                </div>
+                                
+                                <div class="form-group compact">
+                                    <label for="assigner"><i class="fas fa-user"></i> 派单人</label>
+                                    <input type="text" id="assigner" required placeholder="请输入派单人姓名">
+                                </div>
+                                
+                                <div class="form-group compact">
+                                    <label for="price"><i class="fas fa-tag"></i> 价格</label>
+                                    <input type="number" id="price" required placeholder="0.00" min="0" step="0.01">
+                                </div>
+                                
+                                <div class="form-group compact">
+                                    <label for="priority"><i class="fas fa-flag"></i> 优先级</label>
+                                    <select id="priority">
+                                        <option value="low">低优先级</option>
+                                        <option value="medium" selected>中优先级</option>
+                                        <option value="high">高优先级</option>
+                                        <option value="urgent">紧急</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group compact">
+                                    <label for="status"><i class="fas fa-spinner"></i> 状态</label>
+                                    <select id="status">
+                                        <option value="pending" selected>待处理</option>
+                                        <option value="processing">处理中</option>
+                                        <option value="completed">已完成</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group compact">
+                                <label for="remarks"><i class="fas fa-comment"></i> 备注</label>
+                                <textarea id="remarks" rows="2" placeholder="请输入订单备注信息"></textarea>
+                            </div>
+                            
+                            <div class="form-group compact">
+                                <label for="password"><i class="fas fa-lock"></i> 提交密码</label>
+                                <div class="password-input">
+                                    <input type="password" id="password" required placeholder="请输入密码 (默认: 000223)">
+                                    <button type="button" class="toggle-password" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-hint">
+                                    <i class="fas fa-info-circle"></i> 默认密码: 000223
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions compact">
+                                <button type="submit" class="btn btn-gradient-primary">
+                                    <i class="fas fa-paper-plane"></i> 提交订单
+                                </button>
+                                <button type="button" id="cancelBtn" class="btn btn-gradient-secondary">
+                                    <i class="fas fa-times"></i> 取消
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="instructions">
-            <h3><i class="fas fa-circle-info"></i> 使用说明</h3>
-            <ul>
-                <li><strong>派单</strong>：点击"派单"按钮创建新订单</li>
-                <li><strong>打单</strong>：点击"打单"按钮查看和处理所有订单</li>
-                <li><strong>数据存储</strong>：订单数据保存在浏览器本地存储中</li>
-                <li><strong>状态更新</strong>：点击订单卡片可更新订单状态</li>
-            </ul>
+            <!-- 打单显示区域 -->
+            <div id="processSection" class="process-section hidden">
+                <div class="section-header">
+                    <h2><i class="fas fa-clipboard-list"></i> 订单列表</h2>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="搜索订单...">
+                        </div>
+                        <select id="statusFilter" class="filter-select">
+                            <option value="all">所有状态</option>
+                            <option value="pending">待处理</option>
+                            <option value="processing">处理中</option>
+                            <option value="completed">已完成</option>
+                        </select>
+                        <select id="priorityFilter" class="filter-select">
+                            <option value="all">所有优先级</option>
+                            <option value="low">低优先级</option>
+                            <option value="medium">中优先级</option>
+                            <option value="high">高优先级</option>
+                            <option value="urgent">紧急</option>
+                        </select>
+                        <button id="sortBtn" class="btn btn-small">
+                            <i class="fas fa-sort-amount-down"></i>
+                        </button>
+                        <button id="refreshBtn" class="btn btn-small">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="ordersList" class="orders-list">
+                    <!-- 订单列表将在这里动态生成 -->
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </div>
+                        <h3>正在加载订单...</h3>
+                        <p>请稍候，正在从云端获取数据</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 云端同步状态 -->
+            <div class="cloud-status">
+                <div class="status-indicator">
+                    <div class="status-dot" id="connectionStatus"></div>
+                    <span>云端状态: <span id="syncStatus">连接中...</span></span>
+                </div>
+                <span class="last-sync">最后同步: <span id="lastSync">-</span></span>
+                <span class="storage-info">存储空间: <span id="storageUsed">0</span> 条订单</span>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>订单管理系统 &copy; 2023 | 使用GitHub Pages部署</p>
-    </footer>
+    <!-- 通知区域 -->
+    <div id="notificationContainer"></div>
+
+    <!-- 密码验证弹窗 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content slide-down">
+            <div class="modal-header">
+                <h2><i class="fas fa-shield-alt"></i> 密码验证</h2>
+                <span class="close admin-close">&times;</span>
+            </div>
+            <div class="modal-body compact">
+                <div class="password-verification">
+                    <div class="lock-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <p>请输入管理员密码以查看订单</p>
+                    <div class="form-group">
+                        <div class="password-input">
+                            <input type="password" id="adminPassword" placeholder="请输入管理员密码">
+                            <button type="button" class="toggle-password" id="toggleAdminPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-hint">
+                            默认密码: 000223
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="verifyBtn" class="btn btn-gradient-primary">验证</button>
+                        <button id="cancelAdminBtn" class="btn btn-gradient-secondary">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认清空弹窗 -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content slide-down">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> 确认操作</h2>
+            </div>
+            <div class="modal-body compact">
+                <div class="confirmation">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <p id="confirmMessage">您确定要执行此操作吗？此操作不可撤销！</p>
+                    <div class="form-actions">
+                        <button id="confirmYes" class="btn btn-gradient-danger">确定</button>
+                        <button id="confirmNo" class="btn btn-gradient-secondary">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
