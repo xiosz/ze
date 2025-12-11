@@ -3,7 +3,7 @@
 
 const SUPABASE_CONFIG = {
     url: "https://sttktysayrdwrntuonke.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0dGt0eXNheXJkd3JudHVvbmtlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA2MjY0NzQsImV4cCI6MjA0NjIwMjQ3NH0.qVxvwDdFfD_wO8kKBVgnFm9Z2fqOCf1wC6Z6jCDK_tk" // 替换为您的anon key
+    anonKey: "sb_publishable_kuwn4AYKG3lbDixa3gjSCQ_I6TvWYqY" // 替换为您的anon key
 };
 
 class CloudOrderSystem {
