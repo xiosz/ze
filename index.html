@@ -1,336 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小泽资源导航</title>
-    <style>
-    html, body {
-    height: 100%;
-    width: 100%;
-    overflow: hidden; /* 完全禁用滚动条 */
-}
-        :root {
-            --bg: #0a0c17;
-            --text: rgba(255,255,255,0.95);
-            --accent: #6C5CE7;
-            --card-bg: rgba(255,255,255,0.75);
-        }
-
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', system-ui;
-            line-height: 1.6;
-        }
-
-        #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        /* 全新UI设计 */
-        .ui-container {
-            position: relative;
-            z-index: 2;
-            padding: 20px 2rem 0;
-            min-height: 100vh;
-            display: flex-start;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .content-wrapper {
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #6C5CE7 0%, #A8A4FF 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        .link-grid {
-            display: grid;
-            gap: 1.5rem;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        }
-
-        /* 卡片设计 */
-        .link-card {
-            padding: 1.5rem;
-            border-radius: 12px;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-
-        .link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(108,92,231,0.3);
-        }
-
-        .link-content {
-            display: flex;
-            gap: 1.25rem;
-            align-items: center;
-        }
-
-        .link-icon {
-            font-size: 1.8rem;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 10px;
-            background: rgba(108,92,231,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .link-text {
-            flex: 1;
-        }
-
-        .link-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .link-desc {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            line-height: 1.5;
-        }
-    </style>
-    <!-- 在<body>结束前添加 -->
-<div class="music-player">
-    <audio id="player">
-        <source src="music/Xiaoze.mp3" type="audio/mpeg">
-    </audio>
-    <div class="controls">
-        <button id="playBtn">▶</button>
-        <input type="range" id="progress" value="0">
-        <span id="currentTime">0:00</span>
-    </div>
-</div>
-
-<style>
-/* 播放器样式 */
-.music-player {
-    position: fixed;
-    bottom: 20px;
-    left: 20px
-    right: 10px;
-    background: rgba(225,225,225,0.1);
-    padding: 10px;
-    border-radius: 8px;
-    backdrop-filter: blur(5px);
-    width: 95%;
-    z-index: 1000;
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-#progress {
-    flex: 1;
-    height: 4px;
-    background: #555;
-    border-radius: 2px;
-}
-
-#currentTime {
-    font-size: 0.8rem;
-    color: #fff;
-}
-</style>
-
-<script>
-const player = document.getElementById('player');
-const playBtn = document.getElementById('playBtn');
-const progress = document.getElementById('progress');
-const currentTime = document.getElementById('currentTime');
-
-// 播放/暂停控制
-playBtn.addEventListener('click', () => {
-    player.paused ? player.play() : player.pause();
-    playBtn.textContent = player.paused ? '▶' : '🔘';
-});
-
-// 进度条更新
-player.addEventListener('timeupdate', () => {
-    const progressValue = (player.currentTime / player.duration) * 100;
-    progress.value = progressValue;
-    currentTime.textContent = formatTime(player.currentTime);
-});
-
-// 拖拽进度条
-progress.addEventListener('input', (e) => {
-    const seekTime = (e.target.value / 100) * player.duration;
-    player.currentTime = seekTime;
-});
-
-// 时间格式化
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    seconds = Math.floor(seconds % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理系统</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 使用提取的粒子背景效果 -->
-    <div id="particles-js"></div>
-    
-    <div class="ui-container">
-        <div class="content-wrapper">
-            <div class="header">
-                <h1 class="title">资源导航</h1>
-                <p class="subtitle">精选资源 ｜ 持续更新</p>
-            </div>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tasks"></i> 订单管理系统</h1>
+            <p class="subtitle">简单高效的订单派发与处理工具</p>
+        </header>
 
-            <div class="link-grid">
-                <!-- 证书购买 -->
-                <div class="link-card">
-                    <a href="https://ic.c9dun.cn/links/032C4695" 
-                       target="_blank" 
-                       class="link-content">
-                        <div class="link-icon">🎫</div>
-                        <div class="link-text">
-                            <div class="link-title">iOS证书</div>
-                            <div class="link-desc">iOS分身-破解</div>
-                        </div>
-                    </a>
+        <div class="button-container">
+            <button id="assignBtn" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> 派单
+            </button>
+            <button id="processBtn" class="btn btn-secondary">
+                <i class="fas fa-list-check"></i> 打单
+            </button>
+            <button id="clearBtn" class="btn btn-danger">
+                <i class="fas fa-trash"></i> 清空订单
+            </button>
+        </div>
+
+        <!-- 派单弹窗 -->
+        <div id="assignModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-file-circle-plus"></i> 创建新订单</h2>
+                    <span class="close">&times;</span>
                 </div>
-                
-                <!-- 微信IPA -->
-                <div class="link-card">
-                    <a href="https://172.lot-ml.com/ProductEn/Index/ae44154f7700429a" 
-                       target="_blank" 
-                       class="link-content">
-                        <div class="link-icon">📱</div>
-                        <div class="link-text">
-                            <div class="link-title">大流量卡</div>
-                            <div class="link-desc">正规手机卡</div>
+                <div class="modal-body">
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label for="orderName"><i class="fas fa-heading"></i> 单名：</label>
+                            <input type="text" id="orderName" required placeholder="请输入订单名称">
                         </div>
-                    </a>
-                </div>
-                
-                <!-- 越狱源 -->
-                <div class="link-card">
-                    <a href="https://xiosz.github.io/x/" target="_blank" class="link-content">
-                        <div class="link-icon">🔧</div>
-                        <div class="link-text">
-                            <div class="link-title">iOS越狱</div>
-                            <div class="link-desc">自用越狱源</div>
+                        
+                        <div class="form-group">
+                            <label for="assigner"><i class="fas fa-user"></i> 派单人：</label>
+                            <input type="text" id="assigner" required placeholder="请输入派单人姓名">
                         </div>
-                    </a>
+                        
+                        <div class="form-group">
+                            <label for="price"><i class="fas fa-tag"></i> 价格：</label>
+                            <input type="number" id="price" required placeholder="0.00" min="0" step="0.01">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="remarks"><i class="fas fa-comment"></i> 备注：</label>
+                            <textarea id="remarks" rows="3" placeholder="请输入订单备注信息"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="priority"><i class="fas fa-flag"></i> 优先级：</label>
+                            <select id="priority">
+                                <option value="low">低优先级</option>
+                                <option value="medium" selected>中优先级</option>
+                                <option value="high">高优先级</option>
+                                <option value="urgent">紧急</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status"><i class="fas fa-spinner"></i> 状态：</label>
+                            <select id="status">
+                                <option value="pending" selected>待处理</option>
+                                <option value="processing">处理中</option>
+                                <option value="completed">已完成</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> 提交订单
+                            </button>
+                            <button type="button" id="cancelBtn" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> 取消
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <!-- 打单显示区域 -->
+        <div id="processSection" class="hidden">
+            <div class="section-header">
+                <h2><i class="fas fa-clipboard-list"></i> 订单列表</h2>
+                <div class="stats">
+                    <span id="totalOrders">总计: 0</span>
+                    <span id="pendingOrders">待处理: 0</span>
+                    <span id="completedOrders">已完成: 0</span>
+                </div>
+            </div>
+            
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="搜索订单..." class="search-input">
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">所有状态</option>
+                    <option value="pending">待处理</option>
+                    <option value="processing">处理中</option>
+                    <option value="completed">已完成</option>
+                </select>
+                <button id="sortBtn" class="btn btn-small">
+                    <i class="fas fa-sort-amount-down"></i> 按时间排序
+                </button>
+            </div>
+            
+            <div id="ordersList" class="orders-list">
+                <!-- 订单列表将在这里动态生成 -->
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>暂无订单</h3>
+                    <p>点击"派单"按钮创建您的第一个订单</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3><i class="fas fa-circle-info"></i> 使用说明</h3>
+            <ul>
+                <li><strong>派单</strong>：点击"派单"按钮创建新订单</li>
+                <li><strong>打单</strong>：点击"打单"按钮查看和处理所有订单</li>
+                <li><strong>数据存储</strong>：订单数据保存在浏览器本地存储中</li>
+                <li><strong>状态更新</strong>：点击订单卡片可更新订单状态</li>
+            </ul>
+        </div>
     </div>
 
-    <!-- 使用提取的粒子参数 -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#ffffff"
-                },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    }
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false
-                },
-                "size": {
-                    "value": 5,
-                    "random": true
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "out_mode": "out"
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "repulse"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    }
-                },
-                "modes": {
-                    "repulse": {
-                        "distance": 200
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    }
-                }
-            },
-            "retina_detect": true
-        });
-    </script>
+    <footer>
+        <p>订单管理系统 &copy; 2023 | 使用GitHub Pages部署</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
